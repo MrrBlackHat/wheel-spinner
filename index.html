@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>wheelofnames.com</title>
+<link href="https://fonts.googleapis.com/css2?family=Khmer&display=swap" rel="stylesheet">
+<style>
+/* CSS Styles */
+body {
+    font-family: 'Arial', sans-serif; /* Fallback */
+    font-family: 'Khmer', 'Arial', sans-serif; /* Use Khmer font if available */
+    background: #111; /* Reverted to original dark background */
+    margin: 0;
+    padding: 0;
+    color: #fff; /* White text for overall page */
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 20px;
+    background: #005cfa; /* Blue background for the header only, matching the second image */
+    box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+    color: #fff;
+    position: fixed; /* Fixed header */
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.header-left, .header-right {
+    display: flex;
+    align-items: center;
+}
+
+/* MODIFIED: Removed margin-left and added margin-right to pull it left */
+.header-right {
+    margin-right: 50px; /* Pulls the entire right section 30px (3cm) to the left */
+}
+
+
+.header-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 5px; /* This is the key change */
+    background-image: url('/logo.png'); /* Placeholder for logo */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent;
+    border-radius: 0;
+}
+
+.header h1 {
+    color: #eee;
+    margin: 0;
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.header-nav span {
+    margin-left: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #ffffff;
+    transition: color 0.2s;
+}
+
+.header-nav span:hover {
+    color: #fff;
+}
+
+.header-nav .active {
+    color: #fff;
+    font-weight: bold;
+}
+
+.header-nav .dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.header-nav .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #333;
+    min-width: 120px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+    z-index: 1;
+    top: 25px;
+    left: 0;
+    border-radius: 4px;
+}
+
+.header-nav .dropdown-content span {
+    color: white;
+    padding: 8px 12px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    cursor: pointer; /* Ensure dropdown items are clickable */
+}
+
+.header-nav .dropdown-content span:hover {
+    background-color: #555;
+}
+
+.header-nav .dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.container {
+    display: flex;
+    margin-top: 50px; /* Offset for fixed header */
+    height: calc(100vh - 50px); /* Fill remaining height */
+    overflow: hidden; /* Keep main content from scrolling */
+}
+
+.main-content-wrapper {
+    display: flex;
+    flex: 1;
+    padding: 20px;
+    box-sizing: border-box;
+    flex-direction: column; /* Stack wheel and result box vertically */
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+    position: relative; /* For absolute positioning of pop-up */
+    /* Reverted background for the main content area */
+    background: #1a1a1a; /* Slightly lighter than body background */
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.sidebar {
+    width: 300px; /* Adjust width as in image */
+    background: #2d2d2d; /* Reverted to original dark sidebar background */
+    color: #eee;
+    padding: 20px;
+    box-shadow: -2px 0 8px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Push footer to bottom */
+}
+
+.sidebar-top {
+    flex-grow: 1; /* Allow top content to grow */
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #444;
+}
+
+.sidebar-header h2 {
+    font-size: 16px;
+    margin: 0;
+    color: #fff;
+    font-weight: normal;
+}
+
+.sidebar-header .results-count {
+    font-size: 13px;
+    color: #bbb;
+}
+
+.sidebar-header .results-count span {
+    background-color: #555;
+    padding: 3px 6px;
+    border-radius: 3px;
+    margin-left: 5px;
+}
+
+.sidebar-controls {
+    display: flex;
+    margin-bottom: 15px;
+    gap: 8px; /* Space between buttons */
+}
+
+.sidebar-controls button {
+    background: #555;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-controls button svg {
+    margin-right: 5px;
+}
+
+.sidebar-controls button:hover {
+    background: #777;
+}
+
+.sidebar-controls .hide-button {
+    background: none;
+    border: 1px solid #777;
+    color: #ccc;
+    margin-left: auto; /* Push to the right */
+}
+
+.sidebar-controls .hide-button:hover {
+    background: #333;
+}
+
+.sidebar-input-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column; /* Stack input and dropdown */
+}
+
+.sidebar-input-group .add-image-button {
+    background: #555;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.sidebar-input-group .add-image-button svg {
+    margin-right: 5px;
+}
+
+.sidebar-input-group .input-advanced {
+    background: none;
+    border: 1px solid #777;
+    color: #ccc;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    margin-left: 8px; /* For horizontal layout */
+    flex-shrink: 0; /* Prevent it from shrinking */
+}
+
+.sidebar-input-group .input-advanced-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sidebar-input-field {
+    flex-grow: 1; /* Allow input field to grow */
+    background-color: #444;
+    border: 1px solid #555;
+    color: #eee;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+}
+
+.sidebar-input-field::placeholder {
+    color: #aaa;
+}
+
+.sidebar-input-field:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.5);
+}
+
+.sidebar-entry-list {
+    background: #333;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 10px;
+    height: 250px; /* Fixed height for scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+    margin-bottom: 15px;
+}
+
+.sidebar-entry-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #444;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.sidebar-entry-item:last-child {
+    border-bottom: none;
+}
+
+.sidebar-entry-item span {
+    flex-grow: 1;
+}
+
+.sidebar-entry-item .remove-button {
+    background: none;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    font-size: 18px; /* Larger 'x' */
+    padding: 0 5px;
+    transition: color 0.2s;
+}
+
+.sidebar-entry-item .remove-button:hover {
+    color: #c0392b;
+}
+
+.sidebar-footer {
+    margin-top: auto; /* Pushes to the bottom */
+    text-align: left;
+    font-size: 11px;
+    color: #888;
+    border-top: 1px solid #444;
+    padding-top: 10px;
+}
+
+.sidebar-footer span {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.sidebar-footer .new-badge {
+    background-color: #009207;
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 9px;
+    margin-left: 5px;
+}
+
+/* Wheel specific styles */
+#wheel-container {
+    position: relative;
+    width: 90vw;
+    max-width: 500px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    margin: 0;
+    /* Updated box-shadow for soft, diffused look */
+    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.6), /* Larger, softer main shadow */
+                0px 0px 20px rgba(0, 0, 0, 0.3) inset; /* Soft inner shadow */
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 70%); /* Subtle central glow */
+}
+
+#wheel {
+    width: 100%;   /* Change this */
+    height: 100%;  /* And this */
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+}
+
+#wheel svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#wheel svg text {
+    font-family: 'Khmer OS Siemreap', 'Khmer', 'Arial', sans-serif; /* Changed font to Khmer OS Siemreap, with fallbacks */
+    font-size: 16px;
+    font-weight: normal; /* Changed from 'bold' to 'normal' to unbold the text */
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Pointer specific styles - matched to screenshot (right, pointing left) */
+.pointer {
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent; /* Half height of base */
+    border-bottom: 15px solid transparent; /* Half height of base */
+    border-right: 30px solid #a3a3a3; /* Points right */
+    position: absolute;
+    top: 50%; /* Vertically center */
+    right: -15px; /* Adjust to sit just outside the wheel, slightly less overlap */
+    transform: translateY(-50%); /* Center vertically */
+    z-index: 10;
+    filter: drop-shadow(0px 3px 6px rgba(0,0,0,0.6)); /* Stronger shadow for pointer */
+}
+
+.center-circle {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    border: 5px solid #222;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    cursor: pointer;
+}
+
+.center-circle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 15px;
+    height: 15px;
+    background-color: #aaa;
+    border-radius: 50%;
+}
+
+/* Winner Pop-up (Modal) Styles - based on image_d6817f.png */
+.winner-modal-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Dark overlay */
+    z-index: 2000; /* Above everything */
+    justify-content: center;
+    align-items: center;
+}
+
+.winner-modal {
+    background: #2d2d2d; /* Dark background */
+    border-radius: 8px;
+    padding: 0; /* No general padding here, handled by internal elements */
+    width: 700px; /* Fixed width */
+    max-width: 90%; /* Responsive fallback */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Ensures banner corners are sharp */
+}
+
+.winner-modal-header {
+    background: #e5b700; /* Yellow banner */
+    color: #0e0e0e; /* Dark text on yellow */
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px;
+    position: relative; /* For the close button */
+}
+
+.winner-modal-close {
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 24px;
+    cursor: pointer;
+    line-height: 1; /* Aligns 'x' better */
+    padding: 0;
+    margin-left: 10px;
+}
+
+.winner-modal-content {
+    padding: 20px;
+    text-align: center;
+    color: #eee;
+    font-size: 16px;
+}
+
+.winner-modal-content .winner-name {
+    font-size: 48px; /* Large winner name */
+    font-weight: normal;
+    color: #ffffff; /* Yellow color */
+    margin: 20px 0;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+}
+
+.winner-modal-actions {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    padding: 15px 20px;
+    gap: 10px;
+    border-top: 1px solid #444; /* Separator line */
+    background: #3a3a3a; /* Slightly lighter footer */
+}
+
+.winner-modal-actions button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.winner-modal-actions .close-button {
+    background-color: #555; /* Grayish button */
+    color: white;
+    border: none;
+}
+
+.winner-modal-actions .close-button:hover {
+    background-color: #777;
+}
+
+.winner-modal-actions .remove-button {
+    background-color: #e74c3c; /* Red remove button */
+    color: white;
+    border: none;
+}
+
+.winner-modal-actions .remove-button:hover {
+    background-color: #c0392b;
+}
+
+/* Confetti styles */
+.confetti {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    opacity: 0;
+}
+
+/* Force Winner Input Modal */
+.force-winner-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.force-winner-modal {
+    background: #2d2d2d;
+    border-radius: 8px;
+    padding: 20px;
+    width: 300px;
+    max-width: 90%;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.8);
+    text-align: center;
+}
+
+.force-winner-modal h3 {
+    margin-top: 0;
+    color: #fff;
+}
+
+.force-winner-modal input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #555;
+    background-color: #444;
+    color: #eee;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.force-winner-modal button {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.force-winner-modal button:hover {
+    background-color: #2980b9;
+}
+
+.force-winner-modal .cancel-button {
+    background-color: #555;
+    margin-left: 10px;
+}
+
+.force-winner-modal .cancel-button:hover {
+    background-color: #777;
+}
+
+
+/* Responsive design */
+@media (max-width: 1024px) {
+    .container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .main-content-wrapper {
+        order: 2; /* Put wheel below sidebar on small screens */
+        padding: 10px;
+        height: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #444;
+        order: 1; /* Put sidebar on top */
+        padding: 15px;
+        height: auto;
+    }
+
+    #wheel-container {
+        width: 350px;
+        height: 350px;
+        box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.6), inset 0px 0px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .header {
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 8px 10px;
+    }
+
+    .header-nav span {
+        margin-left: 10px;
+        margin-top: 5px;
+        font-size: 12px;
+    }
+
+    .header h1 {
+        font-size: 14px;
+    }
+
+    .winner-modal {
+        width: 320px;
+    }
+
+    .winner-modal-content .winner-name {
+        font-size: 36px;
+    }
+}
+
+@media (max-width: 768px) {
+    #wheel-container {
+        width: 280px;
+        height: 280px;
+        box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6), inset 0px 0px 10px rgba(0, 0, 0, 0.3);
+    }
+    #wheel svg text {
+        font-size: 14px;
+    }
+    .pointer {
+        border-top: 10px solid transparent; /* Slightly smaller pointer */
+        border-bottom: 10px solid transparent;
+        border-right: 15px solid #a7a7a7; /* Changed to border-right for consistency as pointer points right */
+        right: 5px; /* Adjust for smaller size */
+    }
+    .center-circle {
+        width: 60px;
+        height: 60px;
+        border: 3px solid #222;
+    }
+    .center-circle::after {
+        width: 10px;
+        height: 10px;
+    }
+
+    .winner-modal-header {
+        font-size: 16px;
+        padding: 8px 15px;
+    }
+
+    .winner-modal-content {
+        padding: 15px;
+    }
+
+    .winner-modal-content .winner-name {
+        font-size: 30px;
+    }
+
+    .winner-modal-actions button {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+}
+</style>
+</head>
+<body>
+<div class="header">
+    <div class="header-left">
+        <div class="header-icon"></div>
+        <h1>wheelofnames.com</h1>
+    </div>
+    <div class="header-right header-nav">
+        <span>Customize</span>
+        <span>New</span>
+        <span>Open</span>
+        <span>Save</span>
+        <span>Share</span>
+        <span>Gallery</span>
+        <span class="dropdown">More
+            <div class="dropdown-content">
+                <span>Option 1</span>
+                <span>Option 2</span>
+                <span onclick="openForceWinnerModal()">Force Winner</span>
+            </div>
+        </span>
+        <span class="dropdown">English
+            <div class="dropdown-content">
+                <span>ភាសាខ្មែរ (Khmer)</span>
+                <span>Español</span>
+            </div>
+        </span>
+    </div>
+</div>
+
+<div class="container">
+    <div class="main-content-wrapper">
+        <div id="wheel-container">
+            <div id="wheel"></div>
+            <div class="pointer"></div>
+            <div class="center-circle"></div>
+        </div>
+
+        <div id="winnerModalOverlay" class="winner-modal-overlay">
+            <div class="winner-modal">
+                <div class="winner-modal-header">
+                    We have a winner!
+                    <button class="winner-modal-close" onclick="closeWinnerModal()">&times;</button>
+                </div>
+                <div class="winner-modal-content">
+                    <div class="winner-name" id="modalWinnerName"></div>
+                </div>
+                <div class="winner-modal-actions">
+                    <button class="close-button" onclick="closeWinnerModal()">Close</button>
+                    <button class="remove-button" onclick="removeWinnerAndClose()">Remove</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="forceWinnerModalOverlay" class="force-winner-modal-overlay">
+            <div class="force-winner-modal">
+                <h3>Force a Winner</h3>
+                <input type="text" id="forceWinnerInput" placeholder="Enter winner's name">
+                <button onclick="setForcedWinner()">Set Winner</button>
+                <button class="cancel-button" onclick="closeForceWinnerModal()">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="sidebar">
+        <div class="sidebar-top">
+            <div class="sidebar-header">
+                <h2>Entries</h2>
+                <div class="results-count"><span>4</span></div>
+                <button class="sidebar-controls hide-button">Hide</button>
+            </div>
+
+            <div class="sidebar-controls">
+                <button onclick="shuffleNames()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;">
+                        <path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/>
+                    </svg>
+                    Shuffle
+                </button>
+                <button onclick="sortNames()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;">
+                        <path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/>
+                    </svg>
+                    Sort
+                </button>
+                <button onclick="clearAllNames()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;">
+                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5L13.5 2H10L9.5 4H5v2h14V4z"/>
+                    </svg>
+                    Clear All
+                </button>
+            </div>
+
+            <div class="sidebar-input-group">
+                <button class="add-image-button">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;">
+                        <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                    </svg>
+                    Add image
+                </button>
+                <div class="input-advanced-container">
+                    <input type="text" id="newName" class="sidebar-input-field" placeholder="Add new entry...">
+                    <button class="input-advanced">Advanced</button>
+                </div>
+            </div>
+
+            <div class="sidebar-entry-list" id="nameList">
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <span>Version 364</span> <span class="new-badge">New!</span>
+            <span>Changelog</span>
+        </div>
+    </div>
+</div>
+
+<script>
+// JavaScript for the wheel
+let originalNames = ["ស៊ាវគុណ", "ស្រីនិច", "វិច្ឆិកា", "ភ័ស"]; // Store original names
+let names = [...originalNames]; // Work with a copy
+// Color order adjusted to match the screenshot (clockwise from top-right slice)
+// Top-right: Yellow, Bottom-right: Blue, Bottom-left: Green, Top-left: Red
+// In SVG, slices are drawn from 0 degrees (right).
+// So, the order should be: Yellow (0-90), Blue (90-180), Green (180-270), Red (270-360)
+const colors = ["#d0ad00", "#4A90E2", "#009708", "#D0021B"]; // Yellow, Blue, Green, Red
+let currentRotation = 0; // This will track the *total* rotation
+let lastWinner = null; // To store the last winner for removal
+let forcedWinner = null; // To store the name of the forced winner
+
+const wheelContainer = document.getElementById("wheel-container");
+function resizeWheel() {
+    const size = wheelContainer.clientWidth;
+    const wheelEl = document.getElementById("wheel");
+    wheelEl.style.width = size + "px";
+    wheelEl.style.height = size + "px";
+}
+window.addEventListener("resize", () => {
+    resizeWheel();
+    drawWheel();
+});
+resizeWheel();
+
+// Initialize the wheel and name list
+function initialize() {
+    drawWheel();
+    updateNameList();
+}
+
+// Update the name list display
+function updateNameList() {
+    const nameList = document.getElementById("nameList");
+    nameList.innerHTML = names.map(name => `
+        <div class="sidebar-entry-item">
+            <span>${name}</span>
+            <button class="remove-button" onclick="removeName('${name}')">&times;</button>
+        </div>
+    `).join("");
+
+    // Update entries count in the sidebar header
+    document.querySelector('.results-count span').textContent = names.length;
+}
+
+// Draw the wheel using SVG
+function drawWheel() {
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("viewBox", "0 0 200 200");
+    svg.style.width = "100%";
+    svg.style.height = "100%";
+
+    if (names.length === 0) {
+        document.getElementById("wheel").innerHTML = "";
+        return;
+    }
+
+    const anglePer = 360 / names.length;
+
+    names.forEach((name, i) => {
+        const startAngle = anglePer * i;
+        const endAngle = anglePer * (i + 1);
+
+        const x1 = 100 + 100 * Math.cos(Math.PI * startAngle / 180);
+        const y1 = 100 + 100 * Math.sin(Math.PI * startAngle / 180);
+        const x2 = 100 + 100 * Math.cos(Math.PI * endAngle / 180);
+        const y2 = 100 + 100 * Math.sin(Math.PI * endAngle / 180);
+
+        const path = document.createElementNS(svgNS, "path");
+        path.setAttribute("d", `M100,100 L${x1},${y1} A100,100 0 ${(anglePer > 180 ? 1 : 0)},1 ${x2},${y2} Z`);
+        path.setAttribute("fill", colors[i % colors.length]);
+        svg.appendChild(path);
+
+        const angle = startAngle + anglePer / 2; // Middle of the slice
+        const radiusForText = 65; // Distance from center to text
+        const textX = 100 + radiusForText * Math.cos(Math.PI * angle / 180);
+        const textY = 100 + radiusForText * Math.sin(Math.PI * angle / 180);
+
+        const text = document.createElementNS(svgNS, "text");
+        text.setAttribute("x", textX);
+        text.setAttribute("y", textY);
+        text.setAttribute("text-anchor", "middle");
+        text.setAttribute("dominant-baseline", "middle");
+        text.setAttribute("fill", "white");
+        text.setAttribute("font-size", "10");
+        text.setAttribute("font-weight", "normal");
+
+        // Perfect upright rotation for all segments
+        let textRotationAngle = angle;
+
+        text.setAttribute("transform", `rotate(${textRotationAngle}, ${textX}, ${textY})`);
+        text.textContent = name;
+        svg.appendChild(text);
+    });
+
+    document.getElementById("wheel").innerHTML = "";
+    document.getElementById("wheel").appendChild(svg);
+}
+
+// Spin the wheel
+function spinWheel() {
+    if (names.length === 0) {
+        showMessageBox("Please add names to the wheel before spinning!", "Error");
+        return;
+    }
+
+    let targetIndex;
+    let finalName;
+
+    if (forcedWinner && names.includes(forcedWinner)) {
+        targetIndex = names.indexOf(forcedWinner);
+        finalName = forcedWinner;
+        console.log(`Forcing winner: ${forcedWinner} (Index: ${targetIndex})`);
+        forcedWinner = null;
+        document.getElementById("forceWinnerInput").value = '';
+    } else {
+        targetIndex = Math.floor(Math.random() * names.length);
+        finalName = names[targetIndex];
+        console.log(`Random winner: ${finalName} (Index: ${targetIndex})`);
+    }
+
+    lastWinner = finalName;
+
+    const anglePerSlice = 360 / names.length;
+
+    // Calculate the precise angle needed for the *center* of the target slice
+    let targetCenterAngle = (targetIndex * anglePerSlice) + (anglePerSlice / 2);
+
+    // Calculate the desired final angle modulo 360 for the wheel to land correctly.
+    let desiredFinalModuloAngle = (360 - targetCenterAngle) % 360;
+
+    // --- NEW LOGIC FOR REALISM START ---
+    // Introduce a random offset within the target slice
+    // We want to land *within* the slice, not just the center.
+    // The range for the offset should be from -(anglePerSlice / 2) to +(anglePerSlice / 2).
+    // Let's make it slightly less to avoid landing right on the border,
+    // for example, from -45% to +45% of the slice's width.
+    const maxOffset = anglePerSlice * 0.45; // Max 45% of half the slice angle
+    const randomOffset = (Math.random() * 2 - 1) * maxOffset; // Random number between -maxOffset and +maxOffset
+
+    desiredFinalModuloAngle += randomOffset; // Apply the random offset
+    // --- NEW LOGIC FOR REALISM END ---
+
+    let fullSpins = 15; // As per our previous discussion, or adjust as desired
+    let totalRotation = currentRotation - (currentRotation % 360) + desiredFinalModuloAngle + (fullSpins * 360);
+
+    document.getElementById("wheel").style.transition = "transform 10s cubic-bezier(0.1, 0.7, 0.1, 1)"; // Ensure this matches your fullSpins
+    document.getElementById("wheel").style.transform = `rotate(${totalRotation}deg)`;
+
+    currentRotation = totalRotation;
+
+    setTimeout(() => {
+        showWinnerModal(finalName);
+    }, 10200); // Ensure this matches your transition duration + buffer
+}4
+
+// Show the winner modal
+function showWinnerModal(winnerName) {
+    document.getElementById("modalWinnerName").textContent = winnerName;
+    document.getElementById("winnerModalOverlay").style.display = "flex";
+    // Play sound
+    const audio = new Audio('https://www.soundjay.com/human/sounds/applause-8.mp3');
+    audio.volume = 0.4;
+    audio.play().catch(e => console.log("Audio play failed:", e));
+
+    // Create confetti effect
+    const confettiColors = ['#e74c3c', '#3498db', '#2ecc71', '#f1c40f', '#9b59b6', '#FF6B6B', '#5DA2D5', '#FFD166'];
+    const numConfetti = 80; // More confetti
+    for (let i = 0; i < numConfetti; i++) {
+        setTimeout(() => {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+
+            const startX = Math.random() * window.innerWidth;
+            const startY = -20; // Start slightly above viewport
+
+            confetti.style.left = startX + 'px';
+            confetti.style.top = startY + 'px';
+            confetti.style.opacity = 1;
+
+            const animation = confetti.animate([
+                { top: startY + 'px', transform: `translateX(0px) rotate(0deg)` },
+                { top: (window.innerHeight + 50) + 'px', transform: `translateX(${Math.random() * 600 - 300}px) rotate(${Math.random() * 1080}deg)` }
+            ], {
+                duration: 2500 + Math.random() * 1500,
+                easing: 'linear',
+                fill: 'forwards'
+            });
+
+            document.body.appendChild(confetti);
+            animation.onfinish = () => confetti.remove();
+        }, Math.random() * 600); // Stagger start times
+    }
+}
+
+// Close winner modal
+function closeWinnerModal() {
+    document.getElementById("winnerModalOverlay").style.display = "none";
+}
+
+// Remove winner and close modal
+function removeWinnerAndClose() {
+    if (lastWinner) {
+        removeName(lastWinner); // This will redraw the wheel and update the list
+        lastWinner = null;
+    }
+    closeWinnerModal();
+}
+
+// Remove a specific name
+function removeName(nameToRemove) {
+    const initialLength = names.length;
+    names = names.filter(name => name !== nameToRemove);
+    if (names.length !== initialLength) {
+        drawWheel();
+        updateNameList();
+    }
+}
+
+// Add new name
+function addName() {
+    const newName = document.getElementById("newName").value.trim();
+    if (newName && !names.includes(newName)) {
+        names.push(newName);
+        drawWheel();
+        updateNameList();
+        document.getElementById("newName").value = "";
+    }
+}
+
+// Shuffle names (for the shuffle button)
+function shuffleNames() {
+    for (let i = names.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [names[i], names[j]] = [names[j], names[i]];
+    }
+    drawWheel();
+    updateNameList();
+}
+
+// Sort names (for the sort button)
+function sortNames() {
+    names.sort();
+    drawWheel();
+    updateNameList();
+}
+
+// Clear all names
+function clearAllNames() {
+    // Replaced confirm with a custom message box for better UX in an iframe environment
+    showConfirmationBox("Are you sure you want to clear all entries?", () => {
+        names = [];
+        drawWheel();
+        updateNameList();
+    });
+}
+
+// Reset wheel and names
+function resetWheel() {
+    currentRotation = 0;
+    document.getElementById("wheel").style.transition = "none";
+    document.getElementById("wheel").style.transform = "rotate(0deg)";
+    closeWinnerModal(); // Ensure modal is closed on reset
+    names = [...originalNames]; // Reset to original names
+    drawWheel();
+    updateNameList();
+    setTimeout(() => {
+        // Re-enable transition after a brief moment so subsequent spins animate
+        document.getElementById("wheel").style.transition = "transform 6s cubic-bezier(0.1, 0.7, 0.1, 1)";
+    }, 100);
+}
+
+// Force Winner Modal Functions
+function openForceWinnerModal() {
+    document.getElementById("forceWinnerModalOverlay").style.display = "flex";
+    document.getElementById("forceWinnerInput").focus(); // Focus on the input field
+}
+
+function closeForceWinnerModal() {
+    document.getElementById("forceWinnerModalOverlay").style.display = "none";
+    document.getElementById("forceWinnerInput").value = ''; // Clear input field on modal close
+}
+
+function setForcedWinner() {
+    const inputName = document.getElementById("forceWinnerInput").value.trim();
+    if (inputName) {
+        if (names.includes(inputName)) {
+            forcedWinner = inputName;
+            // Replaced alert with a custom message box
+            showMessageBox(`✅ Winner has been set to: ${forcedWinner}. Now, click the center circle to spin the wheel.`, "Success");
+            closeForceWinnerModal();
+        } else {
+            // Replaced alert with a custom message box
+            showMessageBox(`⚠️ Error: "${inputName}" is not currently on the wheel. Please check the spelling or add it to the entries list.`, "Error");
+            forcedWinner = null; // Ensure it's not set if invalid
+        }
+    } else {
+        forcedWinner = null; // If they clear the box and hit set, un-force winner
+        // Replaced alert with a custom message box
+        showMessageBox("☑️ Force winner has been cleared. The next spin will be random.", "Info");
+        closeForceWinnerModal();
+    }
+}
+
+// Custom Message Box (replacing alert and confirm)
+function showMessageBox(message, type = "Info") {
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = 'force-winner-modal-overlay'; // Reusing modal overlay style
+    modalOverlay.style.display = 'flex';
+
+    const modal = document.createElement('div');
+    modal.className = 'force-winner-modal'; // Reusing modal style
+
+    const header = document.createElement('h3');
+    header.textContent = type;
+    modal.appendChild(header);
+
+    const content = document.createElement('p');
+    content.textContent = message;
+    content.style.color = '#eee';
+    modal.appendChild(content);
+
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'OK';
+    closeButton.className = 'cancel-button'; // Reusing button style
+    closeButton.onclick = () => {
+        modalOverlay.remove();
+    };
+    modal.appendChild(closeButton);
+
+    modalOverlay.appendChild(modal);
+    document.body.appendChild(modalOverlay);
+}
+
+function showConfirmationBox(message, onConfirm) {
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = 'force-winner-modal-overlay';
+    modalOverlay.style.display = 'flex';
+
+    const modal = document.createElement('div');
+    modal.className = 'force-winner-modal';
+
+    const header = document.createElement('h3');
+    header.textContent = "Confirm Action";
+    modal.appendChild(header);
+
+    const content = document.createElement('p');
+    content.textContent = message;
+    content.style.color = '#eee';
+    modal.appendChild(content);
+
+    const confirmButton = document.createElement('button');
+    confirmButton.textContent = 'Yes';
+    confirmButton.onclick = () => {
+        onConfirm();
+        modalOverlay.remove();
+    };
+    modal.appendChild(confirmButton);
+
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'No';
+    cancelButton.className = 'cancel-button';
+    cancelButton.onclick = () => {
+        modalOverlay.remove();
+    };
+    modal.appendChild(cancelButton);
+
+    modalOverlay.appendChild(modal);
+    document.body.appendChild(modalOverlay);
+}
+
+
+// Listen for Enter key to add new name
+document.getElementById("newName").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        addName();
+    }
+});
+
+// Add event listener to the center circle for spinning
+document.querySelector('.center-circle').addEventListener('click', spinWheel);
+
+// Initialize the wheel when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', initialize);
+</script>
+</body>
+</html>
